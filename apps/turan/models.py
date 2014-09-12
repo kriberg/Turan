@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturalday
 from django.core.urlresolvers import reverse
 #from django.template.defaultfilters import slugify
-from turan.templatetags.turan_extras import u_slugify as slugify
+from apps.turan.templatetags.turan_extras import u_slugify as slugify
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.contrib.contenttypes import generic
@@ -23,7 +23,6 @@ import re
 
 import urllib
 import json
-from photos.models import Pool, Image
 
 from celery.task.sets import subtask
 from datetime import datetime
@@ -279,14 +278,6 @@ class Route(models.Model):
 
     def get_trips(self):
         return self.exercise_set.select_related('route', 'user').order_by('duration')
-
-    def get_photos(self):
-        ct = ContentType.objects.get_for_model(self)
-        return [pool.photo for pool in Pool.objects.filter(content_type=ct, object_id=self.id)]
-
-    def add_photo(self, photo):
-        p = Pool(content_object=self, image=photo)
-        p.save()
 
     @property
     def tripcount(self):

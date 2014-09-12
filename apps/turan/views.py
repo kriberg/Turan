@@ -5,7 +5,7 @@ from tasks import smoothListGaussian, power_30s_average \
         create_gpx_from_details, smoothList
 from itertools import groupby, islice
 from forms import ExerciseForm, ImportForm, BulkImportForm
-from profiles.models import Profile, UserProfileDetail
+from apps.profiles.models import Profile, UserProfileDetail
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, HttpResponseForbidden, Http404, HttpResponseServerError
 from django.utils.translation import ugettext_lazy as _
@@ -20,7 +20,7 @@ from django import forms
 from django.forms.models import inlineformset_factory
 from django.core.urlresolvers import reverse
 from django.db.models import Avg, Max, Min, Count, Variance, StdDev, Sum
-from django.contrib.syndication.feeds import Feed
+from django.contrib.syndication.views import Feed
 from threadedcomments.models import ThreadedComment
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -59,8 +59,6 @@ from tagging.models import Tag
 from tribes.models import Tribe
 from friends.models import Friendship
 from wakawaka.models import WikiPage, Revision
-from photos.models import Pool, Image
-from photos.forms import PhotoUploadForm
 from avatar.models import Avatar
 from endless_pagination.decorators import page_template
 
@@ -337,7 +335,7 @@ def week(request, week, user_id='all'):
 
 @cache_page_against_models(Exercise, Profile, User, UserProfileDetail)
 @vary_on_cookie
-def statistics(request, year=None, month=None, day=None, week=None):
+def statistics(request, year=None, month=None, day=None, week=None, alltime=False):
 
     month_format = '%m'
     date_field = 'date'
@@ -394,10 +392,13 @@ def statistics(request, year=None, month=None, day=None, week=None):
             last_day = date + timedelta(days=7)
             datefilter= {"user__exercise__date__gte":  first_day, 'user__exercise__date__lt': last_day}
     else:
-        # silly, but can't find a suitable noop for filter, and ** can't unpack
-        # empty dict into zero arguments - wah
-        dummystart = datetime(1970,1,1)
-        datefilter = { "user__exercise__date__gte": dummystart }
+        if alltime:
+            start = datetime(1970,1,1)
+        else:
+            start = date
+            year = date.year
+            month = date.month
+        datefilter = { "user__exercise__date__gte": start }
 
     teamname = request.GET.get('team')
     statsprofiles = Profile.objects.all()
@@ -453,9 +454,9 @@ def statistics(request, year=None, month=None, day=None, week=None):
             avg_avg_hr = Avg('user__exercise__avg_hr'),
             )
 
-    maxavgspeeds = userstats.filter(max_avg_speed__gt=0.0).order_by('max_avg_speed').reverse()
-    maxspeeds = userstats.filter(max_speed__gt=0.0).order_by('max_speed').reverse()
-    avgspeeds = userstats.filter(avg_avg_speed__gt=0.0).order_by('-avg_avg_speed')
+    maxavgspeeds = userstats.filter(max_avg_speed__gt=0.0).exclude(max_avg_speed__gt=200.0).order_by('max_avg_speed').reverse()
+    maxspeeds = userstats.filter(max_speed__gt=0.0).exclude(max_speed__gt=200.0).order_by('max_speed').reverse()
+    avgspeeds = userstats.filter(avg_avg_speed__gt=0.0).exclude(avg_avg_speed__gt=200.0).order_by('-avg_avg_speed')
     numtrips = userstats.filter(num_trips__gt=0).order_by('num_trips').reverse()
     distsums = userstats.filter(sum_distance__gt=0).order_by('sum_distance').reverse()
     dursums = userstats.filter(sum_duration__gt=0).order_by('sum_duration').reverse()
@@ -2473,27 +2474,6 @@ def search(request, template='turan/search.html', extra_context=None):
     return render_to_response(template, context,
             context_instance=RequestContext(request))
 
-
-@login_required
-def photo_add(request, content_type, object_id):
-    content_type = get_model('turan', content_type)
-    object = get_object_or_404(content_type, pk=object_id)
-    photo_form = form_class()
-
-    if request.method == "POST":
-        if request.POST.get("action") == "upload":
-            photo_form = form_class(request.user, request.POST, request.FILES)
-            if photo_form.is_valid():
-                photo = photo_form.save(commit=False)
-                photo.member = request.user
-                photo.save()
-                pool = Pool(content_object=content_object, image=photo)
-                pool.photo = photo
-                pool.save()
-                #messages.add_message(request, messages.SUCCESS,
-                #    ugettext(_"Successfully uploaded photo '%s'") % photo.title
-                #)
-    return redirect(object.get_absolute_url())
 
 
 def json_altitude_gradient(request, object_id):
