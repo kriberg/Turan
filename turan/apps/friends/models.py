@@ -10,7 +10,6 @@ from django.template.loader import render_to_string
 from hashlib import sha256 as sha_constructor
 
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
 
 # favour django-mailer but fall back to django.core.mail
 if "mailer" in settings.INSTALLED_APPS:
@@ -36,14 +35,14 @@ class Contact(models.Model):
     """
     
     # the user who created the contact
-    user = models.ForeignKey(User, related_name="contacts")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="contacts")
     
     name = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField()
     added = models.DateField(default=datetime.date.today)
     
     # the user(s) this contact correspond to
-    users = models.ManyToManyField(User)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     
     def __unicode__(self):
         return "%s (%s's contact)" % (self.email, self.user)
@@ -80,8 +79,8 @@ class Friendship(models.Model):
     have both agreed to the association.
     """
     
-    to_user = models.ForeignKey(User, related_name="friends")
-    from_user = models.ForeignKey(User, related_name="_unused_")
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="friends")
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="_unused_")
     # @@@ relationship types
     added = models.DateField(default=datetime.date.today)
     
@@ -140,7 +139,7 @@ class JoinInvitation(models.Model):
     contact who is not known to be a user.
     """
     
-    from_user = models.ForeignKey(User, related_name="join_from")
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="join_from")
     contact = models.ForeignKey(Contact)
     message = models.TextField()
     sent = models.DateField(default=datetime.date.today)
@@ -178,8 +177,8 @@ class FriendshipInvitation(models.Model):
     associated as friends.
     """
     
-    from_user = models.ForeignKey(User, related_name="invitations_from")
-    to_user = models.ForeignKey(User, related_name="invitations_to")
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="invitations_from")
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="invitations_to")
     message = models.TextField()
     sent = models.DateField(default=datetime.date.today)
     status = models.CharField(max_length=1, choices=INVITE_STATUS)
@@ -210,8 +209,8 @@ class FriendshipInvitationHistory(models.Model):
     History for friendship invitations
     """
     
-    from_user = models.ForeignKey(User, related_name="invitations_from_history")
-    to_user = models.ForeignKey(User, related_name="invitations_to_history")
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="invitations_from_history")
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="invitations_to_history")
     message = models.TextField()
     sent = models.DateField(default=datetime.date.today)
     status = models.CharField(max_length=1, choices=INVITE_STATUS)

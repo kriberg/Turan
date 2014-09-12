@@ -7,14 +7,13 @@ from django.contrib.contenttypes.models import ContentType
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
-from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturalday
 from django.core.urlresolvers import reverse
 #from django.template.defaultfilters import slugify
 from turan.apps.turan.templatetags.turan_extras import u_slugify as slugify
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.files.base import ContentFile
 from tagging.fields import TagField
 import types
@@ -83,7 +82,7 @@ class EquipmentType(models.Model):
         verbose_name_plural = _("Equipment Types")
 
 class Equipment(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     equipmenttype = models.ForeignKey(EquipmentType)
     image = models.ImageField(upload_to='equipment', blank=True, storage=gpxstore)
     url = models.URLField(_('External URL'), blank=True, help_text=_('Added info in external URL'))
@@ -395,7 +394,7 @@ live_states = (
 
 class Exercise(models.Model):
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     exercise_type = models.ForeignKey(ExerciseType, verbose_name=_('Exercise type'), default=13) # FIXME hardcoded to cycling
     route = models.ForeignKey(Route, blank=True, null=True, help_text=_("Search existing routes"))
     duration = DurationField(_('Duration'), blank=True, default=0, help_text='18h 30m 23s 10ms 150mis')
@@ -433,7 +432,7 @@ class Exercise(models.Model):
 
     object_id = models.IntegerField(null=True)
     content_type = models.ForeignKey(ContentType, null=True)
-    group = generic.GenericForeignKey("object_id", "content_type")
+    group = GenericForeignKey("content_type", "object_id")
 
     tags = TagField(verbose_name=_('Tags'), help_text='f.eks. sol regn uhell punktering')
 
@@ -869,7 +868,7 @@ class Segment(models.Model):
         return self.segmentdetail_set.all().order_by('duration')
 
     def get_toplist(self):
-        return User.objects.filter(exercise__segmentdetail__segment__exact=self.id).annotate(duration=Min('exercise__segmentdetail__duration')).order_by('duration')[:3]
+        return settings.AUTH_USER_MODEL.objects.filter(exercise__segmentdetail__segment__exact=self.id).annotate(duration=Min('exercise__segmentdetail__duration')).order_by('duration')[:3]
         #return SegmentDetail.objects.filter(segment=self.id).values('exercise__user').annotate(duration=Min('duration')).order_by('duration')
 
     def get_latest(self):

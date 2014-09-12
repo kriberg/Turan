@@ -212,7 +212,7 @@ INSTALLED_APPS = (
 
 # TUUURAN
     'turan.apps.turan',
-    'piston',
+#   'piston',
     'rosetta',
 #   'debug_toolbar',
 
@@ -222,7 +222,7 @@ INSTALLED_APPS = (
     'social_auth',
 
     'turan.apps.tag_app',
-    'turan.apps.api', # turan piston API
+#   'turan.apps.api', # turan piston API
     # 'groups',
     'djcelery',
     'wakawaka',
