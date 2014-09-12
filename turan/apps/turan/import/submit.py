@@ -23,7 +23,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'turansite.settings'
 from django.db import models
 from django.conf import settings
 from datetime import date, time
-from apps.turan.models import *
+from turan.apps.turan.models import *
 from django.core.cache import cache
 import pprint
 import xml.sax

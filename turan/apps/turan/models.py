@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturalday
 from django.core.urlresolvers import reverse
 #from django.template.defaultfilters import slugify
-from apps.turan.templatetags.turan_extras import u_slugify as slugify
+from turan.apps.turan.templatetags.turan_extras import u_slugify as slugify
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.contrib.contenttypes import generic
@@ -160,9 +160,9 @@ class Component(models.Model):
 class RouteManager(models.Manager):
     ''' Primary purpose to remove the /dev/null route. Will also hide "one time routes" '''
 
-    def get_query_set(self):
+    def get_queryset(self):
         # TODO, this needs to be a fixture, with a fixed ID
-        return super(RouteManager, self).get_query_set().exclude(pk=24)#.filter(single_serving=0)
+        return super(RouteManager, self).get_queryset().exclude(pk=24)#.filter(single_serving=0)
 
 
 class Route(models.Model):
@@ -379,8 +379,8 @@ class Route(models.Model):
 class ExerciseManager(models.Manager):
     ''' Some permission related purposes '''
 
-    def get_query_set(self):
-        return super(ExerciseManager, self).get_query_set().exclude(exercise_permission='N')
+    def get_queryset(self):
+        return super(ExerciseManager, self).get_queryset().exclude(exercise_permission='N')
 
 permission_choices = (
             ('A', _('All')),
@@ -1039,8 +1039,8 @@ class Slope(models.Model):
 class SegmentDetailManager(models.Manager):
     ''' Removes non-public segments from lists '''
 
-    def get_query_set(self):
-        return super(SegmentDetailManager, self).get_query_set().filter(public=1)
+    def get_queryset(self):
+        return super(SegmentDetailManager, self).get_queryset().filter(public=1)
 
 class SegmentDetail(models.Model):
 

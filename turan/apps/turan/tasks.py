@@ -32,8 +32,6 @@ from pwxparser import PWXParser
 from fitparser import FITParser
 from stravastreamparser import StravaStreamParser
 from polaronlineparser import POLParser
-from suuntoxlsxparser import SuuntoXLSXParser
-from suuntoxmlparser import SuuntoXMLParser
 from django.utils.translation import ugettext_lazy as _
 
 import socket
@@ -83,13 +81,7 @@ def find_parser(sensorfile):
     elif f_lower.endswith('.fit'):
         parser = FITParser()
     elif f_lower.endswith('.xml'): # Polar online or Suunto XML
-        with open(sensorfile.file, 'r') as f:
-            if 'Suunto' in f.read(1024):
-                parser = SuuntoXMLParser()
-            else:
-                parser = POLParser()
-    elif f_lower.endswith('xlsx'): # Suunto Web export
-        parser = SuuntoXLSXParser()
+        parser = POLParser()
     elif f_lower.endswith('strava_json'): # Strava Stream
         parser = StravaStreamParser()
     else:

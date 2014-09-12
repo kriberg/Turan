@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.contrib.auth.models import AbstractUser
 from django.db.models import Count
 from django.utils.translation import ugettext_lazy as _
 import simplejson
@@ -9,18 +8,17 @@ from django.utils.safestring import mark_safe
 
 from timezones.fields import TimeZoneField
 
-class Profile(models.Model):
+class Profile(AbstractUser):
     gender_choices = (
-                  ('M', _('Male')),
-                  ('F', _('Female')),
-    )
-    
-    user = models.ForeignKey(User, unique=True, verbose_name=_('user'))
+            ('M', _('Male')),
+            ('F', _('Female')),
+            )
+
     name = models.CharField(_('name'), help_text=_('Optional real name'), max_length=50, null=True, blank=True)
     about = models.TextField(_('about'), null=True, blank=True)
     location = models.CharField(_('location'), max_length=40, null=True, blank=True)
     website = models.URLField(_('website'), null=True, blank=True)
-    
+
     height = models.IntegerField(_('Height'), blank=True, default=0, help_text=_('in cm'))
     weight = models.FloatField(_('Weight'),blank=True, default=0, help_text=_('in kg, used to calculate power'))
     resting_hr = models.IntegerField(_('Resting HR'), blank=True, default=0, help_text=_('beats per minute'))
@@ -77,6 +75,9 @@ class Profile(models.Model):
                 pass
         return userftp
 
+    def get_profile(self):
+        return self
+
 class UserProfileDetail(models.Model):
     userprofile = models.ForeignKey(Profile)
     time = models.DateTimeField(help_text=_('2009-08-27 08:00:00, time optional'))
@@ -107,9 +108,3 @@ class UserProfileDetail(models.Model):
         # TODO: maybe have separate views for all the details in the future?
         return self.userprofile.get_absolute_url()
 
-def create_profile(sender, instance=None, **kwargs):
-    if instance is None:
-        return
-    profile, created = Profile.objects.get_or_create(user=instance)
-
-post_save.connect(create_profile, sender=User)

@@ -5,7 +5,7 @@ from tasks import smoothListGaussian, power_30s_average \
         create_gpx_from_details, smoothList
 from itertools import groupby, islice
 from forms import ExerciseForm, ImportForm, BulkImportForm
-from apps.profiles.models import Profile, UserProfileDetail
+from turan.apps.profiles.models import Profile, UserProfileDetail
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect, HttpResponseForbidden, Http404, HttpResponseServerError
 from django.utils.translation import ugettext_lazy as _

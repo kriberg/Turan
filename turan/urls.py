@@ -15,7 +15,7 @@ signup_view = "account.views.signup"
 urlpatterns = patterns('',
     url(r'^admin/invite_user/$', 'signup_codes.views.admin_invite_user', name="admin_invite_user"),
     url(r'^account/signup/$', signup_view, name="acct_signup"),
-    
+
     (r'^turan/', include('apps.turan.urls')),
     (r'^api/', include('api.urls')),
     (r'^about/', include('about.urls')),
@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     (r'^invitations/', include('friends_app.urls')),
     (r'^notices/', include('notification.urls')),
     (r'^messages/', include('messages.urls')),
-    (r'^announcements/', include('announcements.urls')),
+    #(r'^announcements/', include('announcements.urls')),
     (r'^tribes/', include('pinax.apps.tribes.urls')),
     (r'^comments/', include('threadedcomments.urls')),
     (r'^robots.txt$', include('robots.urls')),

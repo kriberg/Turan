@@ -10,7 +10,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from datetime import date, time
-from apps.turan.models import *
+from turan.apps.turan.models import *
 import pprint
 import urllib
 import re

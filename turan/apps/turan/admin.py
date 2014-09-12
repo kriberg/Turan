@@ -20,8 +20,8 @@ class RouteAdmin(admin.ModelAdmin):
 
 class ExcerciseAdmin(admin.ModelAdmin):
     exclude = ('user',)
-    def queryset(self, request):
-        qs = super(ExcerciseAdmin,self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(ExcerciseAdmin,self).get_queryset(request)
         return qs.filter(user=request.user)
     def save_model(self, request, obj, form, change):
         obj.user = request.user

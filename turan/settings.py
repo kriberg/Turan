@@ -128,7 +128,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+#   'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'pagination.middleware.PaginationMiddleware',
     'django_sorting.middleware.SortingMiddleware',
@@ -141,6 +141,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
+AUTH_USER_MODEL = 'profiles.Profile'
 WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
@@ -194,7 +195,8 @@ INSTALLED_APPS = (
     'robots',
     #'announcements', # this breaks something in django 1.8 i think
     'turan.apps.friends',
-    'announcements',
+    'turan.apps.profiles',
+    #'announcements',
     'oembed',
     'pagination',
     'endless_pagination',
@@ -212,14 +214,13 @@ INSTALLED_APPS = (
     'turan.apps.turan',
     'piston',
     'rosetta',
-    'debug_toolbar',
+#   'debug_toolbar',
 
     # internal (for now)
     #
     #
     'social_auth',
 
-    'turan.apps.profiles',
     'turan.apps.tag_app',
     'turan.apps.api', # turan piston API
     # 'groups',
@@ -244,8 +245,7 @@ MARKUP_CHOICES = (
     ('creole', u'Creole'),
 )
 WIKI_MARKUP_CHOICES = MARKUP_CHOICES
-
-AUTH_PROFILE_MODULE = 'profiles.Profile'
+#AUTH_PROFILE_MODULE = 'turan.apps.profiles.Profile'
 NOTIFICATION_LANGUAGE_MODULE = 'account.Account'
 
 ACCOUNT_OPEN_SIGNUP = True

@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from apps.friends.models import Contact
-from apps.friends.models import Friendship, FriendshipInvitation, FriendshipInvitationHistory
-from apps.friends.models import JoinInvitation
+from turan.apps.friends.models import Contact
+from turan.apps.friends.models import Friendship, FriendshipInvitation, FriendshipInvitationHistory
+from turan.apps.friends.models import JoinInvitation
 
 
 class ContactAdmin(admin.ModelAdmin):

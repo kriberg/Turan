@@ -1,10 +1,10 @@
 from django.contrib import admin
-from apps.profiles.models import Profile, UserProfileDetail
+from turan.apps.profiles.models import Profile, UserProfileDetail
 
 class ProfileAdmin(admin.ModelAdmin):
     exclude = ('user',)
-    def queryset(self, request):
-        qs = super(ProfileAdmin,self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(ProfileAdmin,self).get_queryset(request)
         return qs.filter(user=request.user)
 
     def save_model(self, request, obj, form, change):
@@ -16,8 +16,8 @@ class UserProfileDetailAdmin(admin.ModelAdmin):
     search_fields = ('userprofile',)
     list_filter = ('userprofile',)
 
-    def queryset(self, request):
-        qs = super(UserProfileDetailAdmin,self).queryset(request)
+    def get_queryset(self, request):
+        qs = super(UserProfileDetailAdmin,self).get_queryset(request)
         return qs.filter(userprofile__user=request.user)
 
     def get_form(self, request, obj=None):
