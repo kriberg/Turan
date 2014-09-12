@@ -2,7 +2,6 @@ Django==1.7
 django-celery
 django-extensions
 django-threadedcomments
-django-voting
 django-crispy-forms
 django-compressor
 django-rosetta
@@ -11,7 +10,8 @@ django-social-auth
 #django-piston # Current version in pypi is broken
 phileo
 django-groupcache
-django-wakawaka
+#django-wakawaka # Doesn't support django 1.5+ custom user models
+git+https://github.com/kriberg/django-wakawaka
 django-sorting
 django-microblogging
 django-avatar
@@ -30,3 +30,4 @@ django-pagination
 pyproj
 numpy
 BeautifulSoup
+wadofstuff-django-serializers

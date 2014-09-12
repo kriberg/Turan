@@ -33,23 +33,23 @@ class Contact(models.Model):
     A contact is a person known by a user who may or may not themselves
     be a user.
     """
-    
+
     # the user who created the contact
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="contacts")
-    
+
     name = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField()
     added = models.DateField(default=datetime.date.today)
-    
+
     # the user(s) this contact correspond to
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    
+
     def __unicode__(self):
         return "%s (%s's contact)" % (self.email, self.user)
 
 
 class FriendshipManager(models.Manager):
-    
+
     def friends_for_user(self, user):
         friends = []
         for friendship in self.filter(from_user=user).select_related(depth=1):
@@ -57,14 +57,14 @@ class FriendshipManager(models.Manager):
         for friendship in self.filter(to_user=user).select_related(depth=1):
             friends.append({"friend": friendship.from_user, "friendship": friendship})
         return friends
-    
+
     def are_friends(self, user1, user2):
         if self.filter(from_user=user1, to_user=user2).count() > 0:
             return True
         if self.filter(from_user=user2, to_user=user1).count() > 0:
             return True
         return False
-    
+
     def remove(self, user1, user2):
         if self.filter(from_user=user1, to_user=user2):
             friendship = self.filter(from_user=user1, to_user=user2)
@@ -78,14 +78,14 @@ class Friendship(models.Model):
     A friendship is a bi-directional association between two users who
     have both agreed to the association.
     """
-    
+
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="friends")
     from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="_unused_")
     # @@@ relationship types
     added = models.DateField(default=datetime.date.today)
-    
+
     objects = FriendshipManager()
-    
+
     class Meta:
         unique_together = (('to_user', 'from_user'),)
 

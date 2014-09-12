@@ -142,7 +142,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 AUTH_USER_MODEL = 'profiles.Profile'
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'turan.wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, "templates"),
@@ -193,16 +193,14 @@ INSTALLED_APPS = (
     'notification', # must be first
     'django_extensions',
     'robots',
-    #'announcements', # this breaks something in django 1.8 i think
     'turan.apps.friends',
     'turan.apps.profiles',
-    #'announcements',
     'oembed',
     'pagination',
     'endless_pagination',
+    'django.contrib.comments',
     'threadedcomments',
     'timezones',
-    'voting',
     'tagging',
     'ajax_validation',
     'avatar',
