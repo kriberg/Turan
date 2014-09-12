@@ -172,6 +172,8 @@ COMBINED_INBOX_COUNT_SOURCES = (
     "notification.context_processors.notification",
 )
 
+
+
 INSTALLED_APPS = (
     # included
     'django.contrib.admin',
@@ -190,8 +192,9 @@ INSTALLED_APPS = (
     'notification', # must be first
     'django_extensions',
     'robots',
-    'apps.friends',
     #'announcements', # this breaks something in django 1.8 i think
+    'turan.apps.friends',
+    'announcements',
     'oembed',
     'pagination',
     'endless_pagination',
@@ -206,25 +209,25 @@ INSTALLED_APPS = (
     'compressor',
 
 # TUUURAN
-    'apps.turan',
+    'turan.apps.turan',
     'piston',
     'rosetta',
     'debug_toolbar',
-    
+
     # internal (for now)
     #
     #
     'social_auth',
 
-    'apps.profiles',
-    'apps.tag_app',
-    'apps.api', # turan piston API
+    'turan.apps.profiles',
+    'turan.apps.tag_app',
+    'turan.apps.api', # turan piston API
     # 'groups',
     'djcelery',
     'wakawaka',
 
     'groupcache',
-    'phileo', 
+    'phileo',
 )
 
 GPX_STORAGE = '/home/turan.no/turansite/site_media/turan'

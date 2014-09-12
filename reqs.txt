@@ -1,4 +1,4 @@
-https://www.djangoproject.com/download/1.7c1/tarball/
+Django==1.7
 django-celery
 django-extensions
 django-threadedcomments
@@ -8,7 +8,7 @@ django-compressor
 django-rosetta
 django-debug-toolbar
 django-social-auth
-django-piston
+#django-piston # Current version in pypi is broken
 phileo
 django-groupcache
 django-wakawaka
@@ -25,3 +25,5 @@ django-messages
 django-friends
 django-robots
 django-paging
+django-notification
+django-pagination

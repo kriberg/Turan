@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
-from api.handlers import ExerciseHandler
-from api.handlers import RouteHandler
+from turan.apps.api.handlers import ExerciseHandler
+from turan.apps.api.handlers import RouteHandler
 
 from piston.authentication import HttpBasicAuthentication, OAuthAuthentication
 from piston.doc import documentation_view
