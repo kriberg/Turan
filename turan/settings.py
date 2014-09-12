@@ -195,7 +195,6 @@ INSTALLED_APPS = (
     'robots',
     'turan.apps.friends',
     'turan.apps.profiles',
-    'oembed',
     'pagination',
     'endless_pagination',
     'django.contrib.comments',

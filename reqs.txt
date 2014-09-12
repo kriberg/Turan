@@ -19,7 +19,6 @@ django-ajax-validation
 django-tagging
 django-timezones
 django-endless-pagination
-django-oembed
 django-announcements
 django-messages
 django-friends
@@ -30,4 +29,4 @@ django-pagination
 pyproj
 numpy
 BeautifulSoup
-wadofstuff-django-serializers
+git+https://github.com/mjtorn/wadofstuff-django-serializers
