@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Count
 from django.utils.translation import ugettext_lazy as _
-import simplejson
+import json
 from django.utils.safestring import mark_safe
 
 from timezones.fields import TimeZoneField
@@ -46,7 +46,7 @@ class Profile(AbstractUser):
     
     def get_exercise_types_by_count_json(self):
         ''' Used in exercise create form to autoselect the most used exercise types '''
-        return mark_safe(simplejson.dumps(list(self.user.exercise_set.values('exercise_type__id').annotate(c=Count('exercise_type__id')).order_by('-c'))[:3]))
+        return mark_safe(json.dumps(list(self.user.exercise_set.values('exercise_type__id').annotate(c=Count('exercise_type__id')).order_by('-c'))[:3]))
 
     class Meta:
         verbose_name = _('profile')

@@ -51,7 +51,7 @@ import os
 import zipfile
 import re
 import locale
-import simplejson
+import json
 
 from BeautifulSoup import BeautifulSoup
 
@@ -71,7 +71,7 @@ from turancalendar import WorkoutCalendar
 from templatetags.turan_extras import durationformatshort
 from feeds import ExerciseCalendar
 
-#from simplejson import encoder
+#from json import encoder
 #encoder.c_make_encoder = None
 #encoder.FLOAT_REPR = lambda o: format(o, '.4f')
 
@@ -302,15 +302,15 @@ def segment_detail(request, object_id, template='turan/segment_detail.html', ext
                 t_offset = time
             series[other_user].append((i, time))
         for key, val in series.items():
-            series[key]= simplejson.dumps(val)
+            series[key]= json.dumps(val)
         if slopes:
             exercise_type = slope.exercise.exercise_type
         else:
             exercise_type = ExerciseType.objects.get(name="Running")
 
-        gradients = simplejson.dumps(list(object.segmentaltitudegradient_set.values_list('xaxis', 'gradient')))
-        alt = simplejson.dumps(list(object.segmentaltitudegradient_set.values_list('xaxis', 'altitude')))
-        lonlats = simplejson.dumps(list(object.segmentaltitudegradient_set.values_list('lon', 'lat')))
+        gradients = json.dumps(list(object.segmentaltitudegradient_set.values_list('xaxis', 'gradient')))
+        alt = json.dumps(list(object.segmentaltitudegradient_set.values_list('xaxis', 'altitude')))
+        lonlats = json.dumps(list(object.segmentaltitudegradient_set.values_list('lon', 'lat')))
         alt_max, alt_min = object.segmentaltitudegradient_set.aggregate(max=Max('altitude'),min=Min('altitude')).values()
 
     context = locals()
@@ -819,7 +819,7 @@ def powerjson(request, object_id):
     try:
         start, stop = int(start), int(stop)
     except ValueError:
-        return HttpResponse(simplejson.dumps({}), mimetype='application/json')
+        return HttpResponse(json.dumps({}), mimetype='application/json')
     all_details = object.get_details()
 
     details = all_details.all()[start:stop]
@@ -833,7 +833,7 @@ def powerjson(request, object_id):
         ret['duration'] = durationformatshort(ret['duration'])
 
 
-    return HttpResponse(simplejson.dumps(ret), mimetype='application/json')
+    return HttpResponse(json.dumps(ret), mimetype='application/json')
 
 def wikijson(request, slug, rev_id=None):
     '''
@@ -963,7 +963,7 @@ def segment_geojson(request, object_id):
                         break
                 i += 1
             d_offset = tripdetails[start].distance
-            #alt = simplejson.dumps([((d.distance-d_offset)/1000, d.altitude) for d in tripdetails[start:stop]])
+            #alt = json.dumps([((d.distance-d_offset)/1000, d.altitude) for d in tripdetails[start:stop]])
             details = tripdetails[start:stop]
             break
     else:
@@ -1062,7 +1062,7 @@ def tripdetail_js(object_id, val, start=False, stop=False):
             x += float(time.seconds)/60
             js.append((x, dval))
         #time_xaxis = 
-    return simplejson.dumps(js)
+    return json.dumps(js)
 
 #@profile("json_trip_series")
 def json_trip_series(request, object_id, start=False):
@@ -1313,8 +1313,8 @@ def js_trip_series(request, exercise, details,  start=False, stop=False, time_xa
         res['lon'] = js_strings['lon']
         res['lat'] = js_strings['lat']
 
-    res = simplejson.dumps(res, separators=(',',':'))
-        #    js_strings[val] =  simplejson.dumps(thevals, separators=(',',':'))
+    res = json.dumps(res, separators=(',',':'))
+        #    js_strings[val] =  json.dumps(thevals, separators=(',',':'))
     return res
 
 def getzones_with_legend(exercise):
@@ -1794,7 +1794,7 @@ def autocomplete_route(request, app_label, model):
     routes = Route.objects.filter(qset).exclude(single_serving=1).annotate( tcount=Count('exercise') ).order_by('-tcount')[:limit]
     route_list = [{'id': f.pk, 'name': f.__unicode__(), 'description': f.description, 'tcount': f.tcount, 'icon': f.get_png_url()} for f in routes]
 
-    return HttpResponse(simplejson.dumps(route_list), mimetype='application/json')
+    return HttpResponse(json.dumps(route_list), mimetype='application/json')
 
 def ical(request, username):
 
@@ -1905,9 +1905,9 @@ def import_data(request):
                 if id > 0:
                     strava = {}
                     stream_content = ContentFile(urllib2.urlopen(url).read())
-                    strava["stream"] = simplejson.load(stream_content)
+                    strava["stream"] = json.load(stream_content)
                     meta_content = ContentFile(urllib2.urlopen(meta_url).read())
-                    strava["meta"] = simplejson.load(meta_content)
+                    strava["meta"] = json.load(meta_content)
                     route = Route()
                     route.name = strava["meta"]["ride"]["name"]
                     route.single_serving = True
@@ -1919,7 +1919,7 @@ def import_data(request):
                     if comment: 
                         exercise.comment = comment
                     exercise_filename = 'sensor/strava_' + id + '.strava_json'
-                    exercise.sensor_file.save(exercise_filename, ContentFile(simplejson.dumps(strava)))
+                    exercise.sensor_file.save(exercise_filename, ContentFile(json.dumps(strava)))
                     # exercise.sensor_file = exercise_filename
                     exercise.save()
                     exercise.parse()
@@ -2275,7 +2275,7 @@ def exercise_update_live(request, object_id):
 
     if request.method == 'POST' or request.method == 'GET':
         data = request.raw_post_data
-        data = simplejson.loads(data)
+        data = json.loads(data)
         #print 'JSON: %s' %data
         try:
             for item in data:
@@ -2397,7 +2397,7 @@ def exercise_player(request):
         raise Http404()
 
     for exercise in exercises:
-        alt = simplejson.dumps(list(exercise.exercisealtitudegradient_set.values_list('xaxis', 'altitude')))
+        alt = json.dumps(list(exercise.exercisealtitudegradient_set.values_list('xaxis', 'altitude')))
         alt_max, alt_min = exercise.exercisealtitudegradient_set.aggregate(max=Max('altitude'),min=Min('altitude')).values()
         break
 
@@ -2415,7 +2415,7 @@ def fetchRAAM(request):
     req = {}
     url = "http://live.raam.no/LastPing.aspx"
     req ['data'] = urllib2.urlopen(url).read().strip()
-    response = simplejson.dumps(req)
+    response = json.dumps(req)
     return HttpResponse(response, mimetype="application/json")
 
 @page_template("turan/search/exercise_page.html")
@@ -2483,7 +2483,7 @@ def json_altitude_gradient(request, object_id):
     # TODO this function can be heavily cached
     # TODO should be class based view
     object = get_object_or_404(Exercise, pk=object_id)
-    gradients = simplejson.dumps(list(object.exercisealtitudegradient_set.values_list('xaxis', 'gradient')))
+    gradients = json.dumps(list(object.exercisealtitudegradient_set.values_list('xaxis', 'gradient')))
     #js = compress_string(gradients)
     js = gradients
     response = HttpResponse(js, mimetype='application/json')

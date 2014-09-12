@@ -11,7 +11,7 @@ from endless_pagination import utils
 from endless_pagination import settings as endless_settings
 from endless_pagination.paginators import DefaultPaginator, LazyPaginator, EmptyPage
 from time import mktime
-import simplejson as json
+import json
 import re
 from django.contrib.contenttypes.models import ContentType
 from phileo.models import Like

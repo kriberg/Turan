@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import numpy
-import urllib, urllib2, simplejson
+import urllib, urllib2
 
 def calculate_xPower(attrlist):
     attrlist = exponential_moving_average(attrlist, 25)

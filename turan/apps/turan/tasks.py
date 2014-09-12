@@ -17,7 +17,7 @@ from copy import deepcopy
 import numpy
 from collections import deque
 from datetime import timedelta
-import simplejson
+import json
 
 from svg import GPX2SVG
 from gpx2png import GPX2PNG
@@ -640,7 +640,7 @@ def calculate_freqs(exercise):
 
     if exercise.avg_cadence:
         freqs = getfreqs(details, 'cadence', min=1)
-        freqs = simplejson.dumps(freqs.items())
+        freqs = json.dumps(freqs.items())
         freq = Freq()
         freq.freq_type = 'C'
         freq.json = freqs
@@ -648,7 +648,7 @@ def calculate_freqs(exercise):
         freq.save()
     if exercise.avg_speed:
         freqs = getfreqs(details, 'speed', min=1, max=150) # FIXME why is this 150 ?
-        freqs = simplejson.dumps(freqs.items())
+        freqs = json.dumps(freqs.items())
         freq = Freq()
         freq.freq_type = 'S'
         freq.json = freqs
@@ -656,7 +656,7 @@ def calculate_freqs(exercise):
         freq.save()
     if exercise.avg_power:
         freqs = getfreqs(details, 'power', min=1, val_cutoff=5)
-        freqs = simplejson.dumps(freqs.items())
+        freqs = json.dumps(freqs.items())
         freq = Freq()
         freq.freq_type = 'P'
         freq.json = freqs
@@ -677,7 +677,7 @@ def calculate_freqs(exercise):
                 data: %s,
                 bars: { show: true},
                 color: colors[%s]
-             },''' %(simplejson.dumps(zone.items()), i)
+             },''' %(json.dumps(zone.items()), i)
         js = js.rstrip(',') + ']'
         freq = Freq()
         freq.freq_type = 'H'

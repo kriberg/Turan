@@ -6,7 +6,7 @@
 '''
 
 
-import simplejson
+import json
 from datetime import datetime, timedelta, date
 
 class StravaEntry(object):
@@ -40,7 +40,7 @@ class LapData(object):
 
 class StravaStreamParser(object):
     def parse_uploaded_file(self, f):
-        strava = simplejson.load(f)
+        strava = json.load(f)
         self.laps = []
         self.entries = []
         self.max_speed = strava["meta"]["ride"]["maximumSpeed"] / 1000

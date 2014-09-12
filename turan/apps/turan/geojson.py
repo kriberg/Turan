@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8
 #
-import simplejson
+import json
 
 
 class GeoJSONFeatureCollection(object):
@@ -14,7 +14,7 @@ class GeoJSONFeatureCollection(object):
 
     def __str__(self):
         ''' Return json '''
-        return simplejson.dumps(self.res, separators=(',',':'))
+        return json.dumps(self.res, separators=(',',':'))
 
 class GeoJSONFeature(object):
 
@@ -44,4 +44,4 @@ class GeoJSONFeature(object):
         if not self.lines:
             # Do not return empty feature
             return ''
-        return simplejson.dumps(self.res, separators=(',',':'))
+        return json.dumps(self.res, separators=(',',':'))
