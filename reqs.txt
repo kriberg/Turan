@@ -27,3 +27,4 @@ django-robots
 django-paging
 django-notification
 django-pagination
+pyproj
