@@ -33,6 +33,7 @@ from fitparser import FITParser
 from stravastreamparser import StravaStreamParser
 from polaronlineparser import POLParser
 from suuntoxlsxparser import SuuntoXLSXParser
+from suuntoxmlparser import SuuntoXMLParser
 from django.utils.translation import ugettext_lazy as _
 
 import socket
@@ -61,8 +62,9 @@ if 'sentry' in settings.INSTALLED_APPS:
           })
 
 logger = logging.getLogger('task')
-def find_parser(filename):
+def find_parser(sensorfile):
     ''' Returns correctly initianted parser-class given a filename '''
+    filename = sensorfile.name
     f_lower = filename.lower()
 
     if f_lower.endswith('.hrm'): # Polar !
@@ -80,11 +82,15 @@ def find_parser(filename):
         parser = PWXParser()
     elif f_lower.endswith('.fit'):
         parser = FITParser()
-    elif f_lower.endswith('.xml'): # Polar online
-        parser = POLParser()
-    elif filename.endswith('xlsx'): # Suunto Web export
+    elif f_lower.endswith('.xml'): # Polar online or Suunto XML
+        with open(sensorfile.file, 'r') as f:
+            if 'Suunto' in f.read(1024):
+                parser = SuuntoXMLParser()
+            else:
+                parser = POLParser()
+    elif f_lower.endswith('xlsx'): # Suunto Web export
         parser = SuuntoXLSXParser()
-    elif filename.endswith('strava_json'): # Strava Stream
+    elif f_lower.endswith('strava_json'): # Strava Stream
         parser = StravaStreamParser()
     else:
         raise Exception(_('Unknown file extension'))
@@ -423,7 +429,7 @@ def merge_sensordata(exercise, callback=None):
         # TODO, merge_types, this is only the merge kind.
 
         merger.sensor_file.file.seek(0)
-        parser = find_parser(merger.sensor_file.name)
+        parser = find_parser(merger.sensor_file)
         parser.parse_uploaded_file(merger.sensor_file.file)
         for val in parser.entries:
             # Lookup correct detail based on time TODO: more merge strategies
@@ -1231,7 +1237,7 @@ def parse_sensordata(exercise):
 
 
     # exercise.sensor_file.file.seek(0) 
-    parser = find_parser(exercise.sensor_file.name)
+    parser = find_parser(exercise.sensor_file)
     parser.parse_uploaded_file(exercise.sensor_file.file)
 
     sanitize_entries(parser) # Sanity will prevail
