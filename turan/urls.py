@@ -16,16 +16,16 @@ urlpatterns = patterns('',
     url(r'^admin/invite_user/$', 'signup_codes.views.admin_invite_user', name="admin_invite_user"),
     url(r'^account/signup/$', signup_view, name="acct_signup"),
 
-    (r'^turan/', include('apps.turan.urls')),
-    (r'^api/', include('api.urls')),
-    (r'^about/', include('about.urls')),
+    (r'^turan/', include('turan.apps.turan.urls')),
+    #(r'^api/', include('api.urls')),
+    (r'^about/', include('turan.apps.about.urls')),
     (r'^account/', include('account.urls')),
     # (r'^openid/(.*)', PinaxConsumer()), # TODO: Need to replace with something that exists
     (r'^bbauth/', include('bbauth.urls')),
     (r'^authsub/', include('authsub.urls')),
-    (r'^profiles/', include('profiles.urls')),
-    (r'^tags/', include('tag_app.urls')),
-    (r'^invitations/', include('friends_app.urls')),
+    (r'^profiles/', include('turan.apps.profiles.urls')),
+    (r'^tags/', include('turan.apps.tag_app.urls')),
+    (r'^invitations/', include('turan.apps.friends_app.urls')),
     (r'^notices/', include('notification.urls')),
     (r'^messages/', include('messages.urls')),
     #(r'^announcements/', include('announcements.urls')),
@@ -39,8 +39,8 @@ urlpatterns = patterns('',
     (r'^photos/', include('photos.urls')),
     (r'^avatar/', include('avatar.urls')),
     (r'^wiki/', include('wakawaka.urls.authenticated')),
-    
-    (r'', include('apps.turan.urls')),
+
+    (r'', include('turan.apps.turan.urls')),
 
     (r'', include('social_auth.urls')),
 )
@@ -74,7 +74,7 @@ if 'rosetta' in settings.INSTALLED_APPS:
 
 
 urlpatterns += patterns('',
-    url('^photos/friends_photos/$', 'friends_app.views.friends_objects', kwargs=friends_photos_kwargs, name="friends_photos"),
+    url('^photos/friends_photos/$', 'turan.apps.friends_app.views.friends_objects', kwargs=friends_photos_kwargs, name="friends_photos"),
 )
 
 

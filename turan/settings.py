@@ -135,11 +135,11 @@ MIDDLEWARE_CLASSES = (
 #    'turan.middleware.TuranSentryMarkup',
 #    'sentry.client.middleware.SentryResponseErrorIdMiddleware',
 #    'turan.middleware.TuranSentry404CatchMiddleware',
-    'turan.middleware.Http403Middleware',
+    'turan.apps.turan.middleware.Http403Middleware',
     'django.middleware.transaction.TransactionMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'turan.urls'
 
 AUTH_USER_MODEL = 'profiles.Profile'
 WSGI_APPLICATION = 'turan.wsgi.application'
